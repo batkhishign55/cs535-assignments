@@ -41,7 +41,7 @@
     So merging the k heaps serially results in the number of merge being equal to the number of bit-flips. 
   \end{enumerate}
 
-  \item The rank of a Fibonacci heap is lower bounded by $O(log_2n)$ where $n$ is the number of nodes, because the heap that has not been cut yet been cut is basically a Binomial heap. In other words, no decrease key operation has been executed on the heap.
+  \item The rank of a Fibonacci heap is lower bounded by $O(log_2n)$ where $n$ is the number of nodes, because the heap that has not been cut yet is basically a Binomial heap. In other words, no decrease key operation has been executed on the heap.
   The upper bound of the rank would be $O(log_{\phi}n)$, the reason is that in a Fibonacci heap, the minimum possible number of node a heap can have is a number that has a golden ratio where highest possible grandchildren of the root node has been cut.
   
   In Fibonacci heaps, we do not have One Rank Rule like in Binomial heap. However, if we were to minimize the number of nodes in the
@@ -209,8 +209,25 @@
       With compression it is also $O(1)$ since we don't need to compress.
     \end{enumerate}
   \end{enumerate}
-  \item hello
+  \item
+    \begin{enumerate}
+      \item Type-I edges: These edges represent the final step in each FIND operation.
+      This category allows us to easily calculate the minimum cost of each FIND operation, which is at least one edge traversal.
+      The maximum number of edges in this category is bounded by $O(m)$ where $m$ is the number of union operation executed.\cite{master}
 
+      Type-II edges: These represent edges within the same band.
+      Bands are created based on the ranks of nodes, where rank is related to the height of the subtree rooted at that node.
+      By categorizing these edges separately, it is possible to analyze the cost of traversals within a band, which helps in bounding the overall complexity.\cite{master}
+
+      Type-III edges: These are edges between different bands.
+      This categorization is important because it helps us analyze the cost of traversing between band to band in a FIND operation.
+      Since the number of bands is bounded by log* n, this category directly contributes to the overall complexity bound.\cite{master}
+
+      \item I think Senior Fellow Dr. S. Ave. Counter, at Froohgle Inc, deciding not to count the last step of the Find operation is incorrect.
+      The reason is that there are nodes that are directly connected to the root of a tree(to the representer).
+      If we don't count the last edge separately, we won't be able to analyze the minimum cost of FIND operation since at minimum, FIND operation traverses only one edge.
+      So, counting the last step, Type-I edges, is important.
+  \end{enumerate}
 \end{enumerate}
 
 \begin{thebibliography}{9}
