@@ -65,18 +65,56 @@
   \begin{itemize}
     \item Calculating $p_i/t_i$ gives the following rates: $r=\{5,3,4,2\}$.
     \item Sorting them by $r$ in descending order gives: $job_1,job_3,job_2,job4$.
-    \item Now we greedily choose select the jobs with above order until we can no longer fit within the timeframe of $T=9$.
+    \item Now we greedily choose jobs with above order until we can no longer fit within the timeframe of $T=9$.
     \item We choose $job_1$ and the total profit becomes: $P=p_1=10$, and time left: $T_l=T-t_1=9-2=7$.
     \item Then we choose $job_3$: $P=p_1+p_3=10+8=18$, $T_l=T-t_1-t_3=9-2-2=5$.
-    \item Finally we have only $T_l=5$ left so we can't run anymore jobs since $t_2=7,t_4=7$.
+    \item Finally, we have only $T_l=5$ left so we can't run anymore jobs since $t_2=7,t_4=7$.
     \item The final answer is $P=18$.
   \end{itemize}
 
   But, we can clearly see that maximum profit we can make is $P=31$ by choosing $job_1,job_2$.
   They have total required time of $t_1+t_2=9$ which fits in $T=9$.
   So, this greedy algorithm doesn't result in optimal solution.
+  Instead, we need to choose other methods, like dynamic programming to solve this problem optimally.
   
   \item
+    \begin{enumerate}
+      \item This theorem is not correct. Let's look at the following example.
+
+      \begin{figure}[H]
+        \centering
+        \begin{minipage}{0.4\textwidth}
+          \centering
+          \includegraphics[width=0.7\textwidth]{image1.png}
+          \caption{Suppose we had the above graph $(G,w)$. $r$ is the root node.}
+        \end{minipage}
+        \hspace{1cm}
+        \begin{minipage}{0.4\textwidth}
+          \centering
+          \includegraphics[width=0.7\textwidth]{image2.png}
+          \caption{Consider the above cut. $R=\{r\}$ and $V-R=\{a,b\}$. The cut-set $(R,V-R)$ contains edge from $r\rightarrow a$ and $r\rightarrow b$. According to the algorithm, the smalled edge from $R$ to $V-R$ must be a part of minimum weight directed spanning tree, which is an edge $r\rightarrow a$.}
+        \end{minipage}
+      \end{figure}
+
+      \begin{figure}[H]
+        \centering
+        \begin{minipage}{0.4\textwidth}
+          \centering
+          \includegraphics[width=0.7\textwidth]{image3.png}
+          \caption{Now $R=\{r,a\}$ and $V-R=\{b\}$. So the the new cut-set becomes $(R,V-R)=\{r\rightarrow b,a\rightarrow b\}$} and the edge $a\rightarrow b$ is part of minimum weight directed spanning tree.
+        \end{minipage}
+        \hspace{1cm}
+        \begin{minipage}{0.4\textwidth}
+          \centering
+          \includegraphics[width=0.7\textwidth]{image4.png}
+          \caption{However, minimum weight directed spanning tree consists of edges $(R,V-R)=\{r\rightarrow b,b\rightarrow a\}$ and total weight of $W=30+1=31$. The previous example fails to find the MST in a directed graph.}
+        \end{minipage}
+      \end{figure}
+
+      Since we can't necessarily have the same weight between edges $a\rightarrow b$ adn $b\rightarrow a$, the tree can take different routes that minimizes the total weight. Therefore, this theorem is false.
+
+      \item hello
+    \end{enumerate}
 \end{enumerate}
 
 \begin{thebibliography}{9}
