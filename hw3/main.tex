@@ -113,19 +113,51 @@
 
       Since we can't necessarily have the same weight between edges $a\rightarrow b$ adn $b\rightarrow a$, the tree can take different routes that minimizes the total weight. Therefore, this theorem is false.
 
-      \item hello
+      \item
+      \begin{enumerate}
+        \item If no cycle is found, we indeed have a solution.
+        Because we are excluding the root $r$ and there is no node that has multiple edges coming into since we are only choosing the minimum, which also ensures the cheapest path to every node.
+        That makes the number of edges $|E|=|V|-1$, which is a tree for the fact that no cycle is found.
+
+        Optimum minimum spanning tree in $(G,w)$ is equal to weight of optimum tree in $(G,w^\prime)$ plus sum of minimum incoming edges of all vertices except $r$.
+        In other words, the weight of the optimum MST in the new graph is less by the sum of all minimum incoming edges since we subtracted them.
+
+        \item In this step, we are compressing the graph by converting each detected cycle into supervertex, creating new graph $G^\prime$.
+        Then we recursively solve $G^\prime$ and after recursion, we need to choose which edge to remove from each cycle.
+
+        An edge that we have to remove from a cycle in graph $G$ is the edge incoming to the vertex to which the new minimum edge is found in graph $G'$.
+        Simply put, we have found a new edge coming to the vertex $v$ that was part of a supervertex.
+        Therefore, removing it breaks the cycle, forming tree structure and connects the vertices in the former cycle to the rest of the nodes.
+
+        Complete algorithm:
+        \begin{itemize}
+          \item Find minimum incoming edge for each vertex except $r$, add them to the tree $T$.
+          \item Detect cycles.
+          \item If there is no cycle, return $T$.
+          \item If a cycle/cycles detected:
+            \begin{itemize}
+              \item Reduce weight of each edge coming to a vertices by their minimum.
+              \item Form supervertices on detected cycles, creating $G^\prime$.
+              \item Recursively call this function on $G^\prime$.
+              \item Add new edges incoming to supervertices to $T$.
+              \item Delete edges in cycle incoming to the vertices to which the new edges been added from $T$.
+              \item return $T$.
+            \end{itemize}
+        \end{itemize}
+
+        The algorithm is correct.
+        Firstly, we always choose the minimum edge incoming to a vertex, that is the cheapest way to reach it.
+        If there are cycles, we treat it as a single vertex (supervertex) and need to connect to the rest of the tree, for the reason that they are isolated since there is only one edge to each vertex.
+        We reduce each edge's weight incoming to a vertex by their minimum.
+        This is to find a relative cheapest path to the cycle if there is any.
+        We recursively solve this problem on the new graph with supervertices.
+        After which, we end up with cycles connected to the main tree and have to break the cycle.
+        Breaking the cycle ensures tree structure and minimum path to each node.
+        So on each iteration, we aim to find the optimum MST by choosing the minimum edge to each vertex/supervertex.
+
+      \end{enumerate}
     \end{enumerate}
 \end{enumerate}
-
-\begin{thebibliography}{9}
-
-\bibitem{master}
-master.pdf.
-
-\bibitem{wiki}
-Fibonacci sequence, \emph{Wikipedia}, \url{https://en.wikipedia.org/wiki/Fibonacci_sequence#Relation_to_the_golden_ratio}
-
-\end{thebibliography}
 
 
 \end{document}
