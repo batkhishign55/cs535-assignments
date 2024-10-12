@@ -1,0 +1,106 @@
+\documentclass{article}
+
+% Packages for setting up page margins
+\usepackage[margin=1in]{geometry}
+
+\usepackage{graphicx, setspace, amsmath, mathtools, amssymb, url, float}
+\setlength{\parskip}{2mm}
+\graphicspath{ {./images/} }
+
+% Title
+\title{CS535 Design and Analysis of Algorithms - Midterm}
+\author{Batkhishig Dulamsurankhor - A20543498}
+\date{\today} % Use \date{} for no date
+
+\begin{document}
+
+\maketitle
+
+\begin{enumerate}
+  \item
+  \begin{enumerate}
+    \item For subset system $(E,\mathcal{I})$ to be a matroid, it must satsify the following three properties.
+    Here I am making assumption that $|E|>0$ or the network $G$ has at least one edge.
+
+    \begin{itemize}
+      \item First, it has to be a finite and non-empty set. It is trivial and subsets are limited by $k$ number of edges.
+      If we assume that $|E|>0$ meaning we have at least an edge in the network, this property is satisfied.
+      \item The second is heredity property.
+      In this network $G$, if a subset $S_1$ of $E$ is an independent set, then $S_2$ that is a subset of $S_1$ is also an independent set.
+      In other words, $S_2\subset S_1$ and if $S_1\in \mathcal{I}$ then $S_2\in \mathcal{I}$.
+      Let's say $k=1$, so we can have at most one element in a subset.
+      We have an independent set $|S_1|=k$, so a proper subset of $S_1$ is $\{\varnothing\}$ and by definition we know it also a part of independent sets.
+      Therefore, it does satisfy the second property.
+      \item The third property is exchange property.
+      As long as $k>0$, we can always find an independent set $E_1$ which has more elements than an independent set $E_2$.
+      So by exchange property, $E_1,E_2\in\mathcal{I}$ and if $|E_1|>|E_2|$ then we can always find an edge $e\in E_1$ such that $E_2\cup\{e\}\in \mathcal{I}$.
+      So, it does satisfy the third property.
+
+    \end{itemize}
+    $(E,\mathcal{I})$ is a matroid assuming that the network $G$ has at least one edge.
+
+    \item For a subset system $(E,\mathcal{J})$ to be a matroid, it has to satisfy the following three properties.
+
+    \begin{itemize}
+      \item First, it has to be a finite and non-empty set.
+      We know $E$ has at least $e_1$ and $e_2$, so it is non-empty.
+      With finite number of edges $E$, the first property is satisfied.
+      \item The second is heredity property.
+      Heredity property defines that a subset of independent set is always an independent set.
+      Let's say an independent set $E_1$ contains $e_1$ and not $e_2$.
+      Then the subset of $E_1$, that is $E_2$, can contain $e_1$ but never $e_2$. If $e_1\in E_1$, $e_2\notin E_1$ and $E_2\subseteq E_1$ then $e_2\notin E_2$.
+      In other words, $e_1$ and $e_2$ cannot be in the same independent set.
+      This doesn't break the rule defined in the problem that $\mathcal{J}$ contains at most one of $e_1$ and $e_2$ and satisfies the heredity property.
+      \item The third property is exchange property.
+      Exchange property defines that for $E_1,E_2\in\mathcal{J}$, if $|E_1|>|E_2|$ then $\exists e\in E_1-E_2$ such that $E_2\cup\{e\}\in\mathcal{J}.$
+      Let's provide a counter example that doesn't satisfy this property.
+      Suppose we have independent sets $E_1=\{e_1,e_3\}$ and $E_2=\{e_2\}$ where $e_2$ and $e_3$ are dependent on each other.
+      This satisfies the rule defined in the problem that $\mathcal{J}$ contains at most one of $e_1$ and $e_2$.
+      By exchange property, there should be some element in $E_1$ such that adding it makes $E_2$ independent set.
+      We know that $e_2$ and $e_3$ are dependent on each other, making $e_1$ the answer.
+      However, we can have at most one of $e_1$ and $e_2$ in $\mathcal{J}$ and to satisfy exchange property, we have to break this rule.
+      For this reason, it doesn't satisfy exchange property.
+    \end{itemize}
+    Therefore, $(E,\mathcal{J})$ doesn't form a matroid.
+  \end{enumerate}
+  \item Since technical analyst Dr. W.Ho. Cares's algorithm doesn't terminate after finding MST, we have to check all the other edges left in the graph.
+  Because we found MST, we have only one set in our union find data structure where all vertices are in.
+  So finding an edge always results in a cycle, or both vertices have the same ancestor.
+  Also, it is given that Dr. W.Ho. Cares is using path compression making the union find data structure more efficient.
+
+  I think remaining $O(m)$ finds take only $O(m)$ steps is true.
+  An actual cost for find is the height of vertex $n_i$, $h(n_i)$.
+  We can define potential function as the complexity of the set.
+  It reduces everytime find operation is executed, because the tree is compressed and becomes flatter.
+  By path compression, all vertices from $n_i$ up to the root is has to be connected to the root except from the upmost vertices that is already connected to the root.
+  So the change in potential function becomes $-(h(n_i)-1)$.
+
+  The following is an amortized cost of a single find operation:
+
+  $AM_i=Actual_i+\Delta PF_i=h(n_i)+(-h(n_i)-1)=h(n_i)-h(n_i)+1=1$.
+
+  So the total amortized cost is:
+
+  $\sum_{i}^{m} AM_i = \sum_{i}^{m} Actual_i+\sum_{i}^{m} \Delta PF_i=m*1=m$
+
+  Therefore, the remaining $O(m)$ finds takes $O(m)$ so Dr. W.Ho Cares's claim is true.
+
+  \item In a normal Binomial heap, the number of nodes in a tree of rank $r$ is $2^r$.
+  If we allow up to $k$ trees of any given rank, we can have $k+1$ number of trees of rank $r-1$ for the of rank $r$.
+  This is true for $k=1$, the normal Binomial heap because a tree of a rank $r$ has $k+1=2$ trees of rank $r-1$.
+  Let's say $k=2$, then a tree of a rank $r$ has $k+1=3$ trees of rank $r-1$.
+  We can see the pattern here, so the number of nodes a modified Binomial heap that can have up to $k$ trees of a given rank is $(k+1)^r$.
+
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{image1.png}
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        Example: $k=2$, $r=2$ tree. We can count that the total number of nodes in this tree is $(k+1)^r=(2+1)^2=9.$
+    \end{minipage}
+  \end{figure}
+  \item
+\end{enumerate}
+
+
+\end{document}
