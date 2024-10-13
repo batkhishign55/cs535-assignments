@@ -3,7 +3,7 @@
 % Packages for setting up page margins
 \usepackage[margin=1in]{geometry}
 
-\usepackage{graphicx, setspace, amsmath, mathtools, amssymb, url, float}
+\usepackage{graphicx, setspace, amsmath, mathtools, amssymb, url, float, listings}
 \setlength{\parskip}{2mm}
 \graphicspath{ {./images/} }
 
@@ -85,11 +85,11 @@
 
   Therefore, the remaining $O(m)$ finds takes $O(m)$ so Dr. W.Ho Cares's claim is true.
 
-  \item In a normal Binomial heap, the number of nodes in a tree of rank $r$ is $2^r$.
+  \item In a normal Binomial heap, the number of nodes in a tree of rank $r$ is at most $2^r$.
   If we allow up to $k$ trees of any given rank, we can have $k+1$ number of trees of rank $r-1$ for the of rank $r$.
   This is true for $k=1$, the normal Binomial heap because a tree of a rank $r$ has $k+1=2$ trees of rank $r-1$.
   Let's say $k=2$, then a tree of a rank $r$ has $k+1=3$ trees of rank $r-1$.
-  We can see the pattern here, so the number of nodes a modified Binomial heap that can have up to $k$ trees of a given rank is $(k+1)^r$.
+  We can see the pattern here, so the number of nodes a modified Binomial heap that can have up to $k$ trees of a given rank is at most $(k+1)^r$.
 
   \begin{figure}[H]
     \centering
@@ -99,7 +99,78 @@
         Example: $k=2$, $r=2$ tree. We can count that the total number of nodes in this tree is $(k+1)^r=(2+1)^2=9.$
     \end{minipage}
   \end{figure}
-  \item
+
+  Insert operation has two parts. First, we insert the element to the forest, which is a constant time operation.
+  Then we have to merge the trees with equal ranks, or to a tree with upper rank that has less than $k$ number of that rank tree.
+  We have to repeat this process for higher rank trees if we have to.
+  The merging two trees takes constant time. However in the worst case scenario, we will need to merge up to $log_{k+1}n$ number of trees.
+  Worst case scenario is when adding a single node results in merging of trees for higher and higher ranks and eventually form a single tree.
+  Therefore, the total time complexity is $O(insert+merge)=O(1+1*log_{k+1}n)=O(log_{k+1}n)$.
+
+  For Deletemin operation, first we find the minimum value root among the trees.
+  We know that there can be up to $log_{k+1}n$ number of trees in the heap, making this step $O(log_{k+1}n)$.
+  Then, we remove the root and add the subtrees to the heap.
+  Removing the root takes constant time.
+  Finally, we have to merge the subtrees to the original heap, making no rank has more than $k$ trees.
+  This step has similar complexity to the one we analyzed in insert operation.
+  The time complexity for this step is also $O(log_{k+1}n)$.
+  The total time complexity of deletemin operation is $O(findroot+removeroot+merge)=O(log_{k+1}n+1+log_{k+1}n)=O(log_{k+1}n)$.
+
+  \item In this problem, we have one processor and need to minimize the averge finish time of jobs.
+  Jobs have start time $s_j$ and duration $t_j$ and can be interrupted, meaning we can pause it and execute another job.
+
+  Let's design an algorithm to find the optimal answer.
+  The intuition is that we have to execute jobs that finishes the earliest.
+  At any point when there is a new job or its start time hits, we add it to the pending jobs and get the earliest finishing job again.
+  When a job finishes executing, we pick up the next job that finishes earliest.
+  We keep doing this until no job is left for scheduling and end up with the optimal schedule.
+
+  The following is the pseudocode for the algorithm:
+
+  \begin{lstlisting}
+    sort(H) by start_time;
+    result;
+    PriorityQueue pq on duration;
+    
+    while H has upcoming job:
+      pq.add(H.next);
+      
+      while (H.next.start_time>current_time+pq.peek.duration):
+        pq.poll();
+        result.add(current_time);
+    
+    while pq is not empty:
+      pq.poll();
+      result.add(current_time);
+    
+    return avg(result);
+
+  \end{lstlisting}
+
+  To efficiently calculate and find the next earliest finishing job, I have used priority queue/heap.
+  Let's analyze the time complexity.
+  First we have to sort jobs by their start time, which takes $O(nlogn)$.
+  Next, for each job, we have to insert it to the priority queue by their remaining duration (we can calculate relative duration by simply keeping current time in a constant time).
+  Since insert in heap is $O(logn)$, this step takes $O(nlogn)$.
+  During the process, we also have to execute deletemin to remove jobs from priority queue, and add it to the result.
+  The time complexity for deletemin is $O(logn)$, adding deleted element is $O(1)$ and we have execute this by the number of jobs $n$, thus $O(nlog(n+1))$.
+  Finally, calculating the average and returning result takes constant time $O(1)$.
+
+  The time complexity of the algorithm:
+
+  $O(sorting+insert+deletemin+average)=O(nlogn+nlogn+nlogn+1)=O(nlogn)$
+
+  Let's prove the correctness of this algorithm by contradiction.
+  Let's assume that our algorithm resulted in schedule $S$, and there exist another schedule $S^\prime$ such that the average finish time $S^\prime$ is smaller than $S$'s.
+  This claim suggests that at some point in $t$, the schedule $S^\prime$ is running job $j_m$ that has more remaining duration than job $j_n$.
+
+  $\Delta t=t_m-t_n$.
+
+  The finish time of $j_m$ is $t_m$, but finish time of $j_n$ will be at least $t_m+t_n$.
+  The total of their finish time becomes $T^\prime_{mn}=t_m+t_m+t_n$.
+  However, by swapping these two jobs we have less total time $T_{mn}=t_n+t_n+t_m$, efficient by $\Delta t$.
+  This makes the average finishing time of $S^\prime$ greater than $S$, contradicting the claim.
+  Therefore, this algorithm is correct.
 \end{enumerate}
 
 
