@@ -110,6 +110,50 @@
       return local_min(T)
 
   \end{lstlisting}
+  \item When $k$ is chosen to be $\sqrt{n}$ then the number of partition becomes $n/(2\sqrt{n}+1)$.
+  
+  \begin{itemize}
+    \item We are given that finding a median of each group is $O(1)$ time. So for all columns it's $O(n)$.
+    \item Finding median of median recursively: $FIND(M,\dfrac{n}{2(2\sqrt{n}+1)})$. $T(\dfrac{n}{2(2\sqrt{n}+1)})$
+    \item Use median of median to partition takes $O(n)$.
+    \item The rank of $p$ is:
+    \begin{center}
+      $\dfrac{n}{2(2k+1)}(k+1)\leq rank(p) \leq n-\dfrac{n}{2(2k+1)}(k+1)$
+    \end{center}
+
+    The number of items in paritions A and B. (This is taken from lecture note).
+    Recursive call of the function is limited by the upper limit:
+    
+    \begin{center}
+      $T(n-\dfrac{n}{2(2\sqrt{n}+1)}\sqrt{n}+1)=T(n\dfrac{4\sqrt{n}+2-\sqrt{n}-1}{4\sqrt{n}+2})=T(n\dfrac{3\sqrt{n}+1}{4\sqrt{n}+2})$
+    \end{center}
+
+  \end{itemize}
+
+  The recurrence is therefore:
+
+  \begin{center}
+    $T(n)=O(n)+T(\dfrac{n}{2(2\sqrt{n}+1)})+O(n)+T(n\dfrac{3\sqrt{n}+1}{4\sqrt{n}+2})$
+  \end{center}
+
+  For sufficiently large $n$, $T(\dfrac{n}{2(2\sqrt{n}+1)})\approx T(\sqrt{n})$ and $T(n\dfrac{3\sqrt{n}+1}{4\sqrt{n}+2})\approx T(\dfrac{3}{4}n)$.
+  We can neglect $T(\sqrt{n})$ for large $n$ too.
+  So, the recurrence becomes:
+
+  \begin{center}
+    $T(n)=O(n)+T(\sqrt{n})+O(n)+T(\dfrac{3}{4}n)$
+
+    $=O(n)+T(\dfrac{3}{4}n)$
+  \end{center}
+
+  If we plug in master theorem, we get:
+
+  $a=3, b=4, d=1 \Rightarrow log_ba=log_43<1$
+
+  \begin{center}
+    $T(n)=O(n^d)=O(n)$
+  \end{center}
+  
   \item 
   \item 
   \item 
