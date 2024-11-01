@@ -154,7 +154,58 @@
     $T(n)=O(n^d)=O(n)$
   \end{center}
   
-  \item 
+  \item In this problem, I am assuming the greedy problem works by choosing the shortest edge first.
+  Then we choose the next smallest edge unless it intersects the chosen edges.
+  We keep running this until we are left with all triangles.
+
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{0.4\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{image1.png}
+      \caption{We have the above 5 convex polygon points and we want to find non-intersecting diagonals that divides the pentagon to triangles.}
+    \end{minipage}
+    \hspace{1cm}
+    \begin{minipage}{0.4\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{image2.png}
+      \caption{There are total of 5 possible diagonals. We can choose $n-3=2$ of them to solve this problem.}
+    \end{minipage}
+  \end{figure}
+
+  Let's calculate each of these diagonal's lengths.
+
+  \begin{itemize}
+    \item $l_{AC}=\sqrt{(4-1)^2+(3-3)^2}=\sqrt{9}=3$
+    \item $l_{AD}=\sqrt{(5-1)^2+(0-3)^2}=\sqrt{25}=5$
+    \item $l_{BD}=\sqrt{(5-2.5)^2+(0-3.1)^2}=\sqrt{25}=3.98$
+    \item $l_{BE}=\sqrt{(0-2.5)^2+(0-3.1)^2}=\sqrt{25}=3.98$
+    \item $l_{CE}=\sqrt{(0-4)^2+(0-3)^2}=\sqrt{25}=5$
+  \end{itemize}
+
+  The order of the length: $l_{AC}<l_{BD}=l_{BE}<l_{AD}=l_{CE}$
+
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{0.4\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{image3.png}
+      \caption{If we run greedy algorithm, we choose AC diagonal first because it is the shortest.
+      Then, we can choose either BD or BE, but since they both cross AC, we skip.
+      So, we can either choose AD or CE and let's say we choose AD.
+      The result is, AC and AD with total length $l_{AC}+l_{AD}=3+5=8$.}
+    \end{minipage}
+    \hspace{1cm}
+    \begin{minipage}{0.4\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{image4.png}
+      \caption{However, the optimal solution is not AC and AD.
+      We actually have a better solution, that doesn't contain the shortest diagonal in this polygon.
+      If we choose BE and BD, the total length is $l_{BE}+l_{BD}=3.98+3.98=7.96$, which is less than 8.
+      Therefore, dynamic programming will yield the optimal result and not necessarily greedy algorithm.}
+    \end{minipage}
+  \end{figure}
+
   \item 
   \item 
 \end{enumerate}
