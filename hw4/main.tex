@@ -206,7 +206,57 @@
     \end{minipage}
   \end{figure}
 
-  \item 
+  \item Since we are given a single processor, we can't choose jobs that have overlapping range.
+  We can't use greedy algorithm here because profit is associated with the jobs.
+  So we can solve this using dynamic programming.
+  The algorithm works as follows:
+  \begin{itemize}
+    \item We sort the jobs by their finish time.
+    (Similar to how greedy algorithm works for job scheduling problem without profit)
+    \item We initialize dp array with size of the number of jobs and solve the problem bottom to up.
+    In the dp array, we save the maximum profit after finishing time for each job.
+    We also initialize subsets array for keeping the current subset of jobs.
+    \item To achieve this, we need to calculate whether including the current job can yield maximum profit or not.
+    If it exceeds the maximum profit, we include it or else, we don't include it and keep the previous maximum profit.
+    \item We can calculate the current maximum profit by searching the job that has max finish time and non-overlapping to the current job.
+    By using binary search, we can efficiently find such a job.
+    \item After running these jobs, we return the last value in the subsets array, which is the subset of maximum possible profit.
+  \end{itemize}
+
+  \begin{lstlisting}
+
+    search(J, i):
+      // implementation of binary search
+      // that returns one of the previous jobs that has maximum finish time
+
+    sort(J) by finish time
+    dp[size of J]
+    dp[0] = J[0].profit
+
+    subsets[size of J]
+    subsets[0] = [J[0]]
+
+    for (i=1; i<J.size; i++):
+      idx = search(J, J[i])                      // binary search here
+      if (J[i].profit+dp[idx] > dp[i-1]):
+        subset[i] = [subsets[idx] + [J[i]]]
+        dp[i] = J[i].profit+dp[idx]
+      else:
+        subset[i] = subset[i-1]
+        dp[i] = dp[i-1]
+    
+    return subsets[-1]
+  \end{lstlisting}
+
+  The time complexity:
+
+  \begin{itemize}
+    \item sorting jobs $O(nlogn)$.
+    \item populating dp array for each jobs $O(nlogn)$ (n for each iteration, logn for binary search).
+  \end{itemize}
+
+  The total time complexity is $O(nlogn)$.
+
   \item 
 \end{enumerate}
 
