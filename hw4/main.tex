@@ -228,6 +228,7 @@
     search(J, i):
       // implementation of binary search
       // that returns one of the previous jobs that has maximum finish time
+      return idx
 
     sort(J) by finish time
     dp[size of J]
@@ -237,7 +238,7 @@
     subsets[0] = [J[0]]
 
     for (i=1; i<J.size; i++):
-      idx = search(J, J[i])                      // binary search here
+      idx = search(J, J[i])
       if (J[i].profit+dp[idx] > dp[i-1]):
         subset[i] = [subsets[idx] + [J[i]]]
         dp[i] = J[i].profit+dp[idx]
@@ -252,12 +253,52 @@
 
   \begin{itemize}
     \item sorting jobs $O(nlogn)$.
-    \item populating dp array for each jobs $O(nlogn)$ (n for each iteration, logn for binary search).
+    \item populating dp array for each job $O(nlogn)$ (n for each iteration, logn for binary search).
   \end{itemize}
 
   The total time complexity is $O(nlogn)$.
 
-  \item 
+  \item We can solve this problem also with dynamic programming.
+  The intuition is that for each day, we save the longest valid subsequence of days that ends with that date.
+  
+  Algorithm:
+
+  \begin{itemize}
+    \item Initialize dp array by the size $n$ number of days.
+    In the dp array, we save the longest subsequence that ends with the corresponding date.
+    \item For a day $i$, we obtain the maximum length dp value of previous days if the price is lower than the previous date.
+    Then we update current date's dp value by the previous maximum dp sequence added by the current day price.
+    This way, we can calculate the longest rising sequence of days that ends with the current day $i$.
+    \item After running this algorithm, iterate over each subsequence of dp and return the longest subsequence.
+  \end{itemize}
+
+  \begin{lstlisting}
+    dp[n]
+    dp[0]=[V[0]]
+    for (i=1;i<n;i++):
+      for (j=0;j<i;j++):
+        if (V[j]<V[i] && len(dp[i])<len(dp[j]+1)):
+          dp[i]=dp[j]+[V[i]]
+    
+    result=[]
+    max_len=0
+    for (i=1;i<n;i++):
+      if (len(dp[i])>max_len):
+        result=dp[i]
+        max_len=len(dp[i])
+    
+    return result
+  \end{lstlisting}
+
+  The time complexity:
+
+  \begin{itemize}
+    \item populating dp array for each day $O(n^2)$.
+    \item finding the longest subsequence in dp array $O(n)$.
+  \end{itemize}
+
+  The total time complexity: $O(n^2+n)=O(n^2)$.
+
 \end{enumerate}
 
 
