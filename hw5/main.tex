@@ -1,0 +1,56 @@
+\documentclass{article}
+
+% Packages for setting up page margins
+\usepackage[margin=1in]{geometry}
+
+\usepackage{graphicx, setspace, amsmath, mathtools, amssymb, url, float, listings}
+\setlength{\parskip}{2mm}
+\graphicspath{ {./images/} }
+
+% Title
+\title{CS535 Design and Analysis of Algorithms - Assignment 5}
+\author{Batkhishig Dulamsurankhor - A20543498}
+\date{\today} % Use \date{} for no date
+
+\begin{document}
+
+\maketitle
+
+\begin{enumerate}
+  \item Even if the pivot selection is random, the time complexity will not necessarily change.
+  It is still $O(n)$ because we are running the same algorithm with a random selection.
+
+  With the original Median of Medians algorithm, we know that the pivot will be selected between 30 to 70 percentile when the batch size is 5.
+  However, with random selection, the pivot quality can become worse compared to the original algorithm.
+  Because in worst case scenario, there is a batch with really skewed values to the bottom or top.
+  And it is kept on chosen by the random selection on each recursion, resulting in the final answer.
+  The possiblity of this is unlikely but not 0.
+  It will still perform better than completely random selection.
+
+  \item Professor Piks' is different from the normal skip list by introducing blocks of $k$ items.
+  After tossing a fair coin, each item isn't directly promoted, instead it becomes a candidate to represent the whole block for the next level.
+  Only one of them is chosen as a representative.
+  If a coin toss for each item in the block is tail and there is no possible candidates, the block will not have a representative in the next level.
+
+  \begin{enumerate}
+    \item Let's analyze the probability that all the blocks have a representative at the second level.
+    We know that each coin toss is fair $1/2$.
+    The chance for $k$ items to all hit tail and produce no candidates is $P_{no\_cand}=0.5^k$.
+  
+    This makes the possiblity that there is at least one canditate is chosen $P_{cand}=1-P_{no\_cand}=1-0.5^k$.
+  
+    Let's say we had total of $n$ items. So the number of blocks is $n/k$.
+    So the probability that all the blocks have a representative at the second level is $P_{all\_cand}=P_{cand}^{n/k}=(1-0.5^k)^{n/k}$.
+
+    \item Let's calculate the expected number of blocks that do have a representative at the second level.
+    We already know the possiblity for a block to have a candidate is $P_{cand}=1-0.5^k$.
+
+    Therefore, the expected number of blocks having a representative is $cnt_{cand}=n/k*P_{cand}=n/k*(1-0.5^k)$.
+  \end{enumerate}
+  
+  \item
+
+\end{enumerate}
+
+
+\end{document}
