@@ -80,9 +80,125 @@
 
   $E*P_{no\_overlap}=2/3*E\geq 2/3*c^*$.
 
+  \item At a glance, we could perform dfs from a vertex and at the end check if all vertices are visited.
+  If not, we choose another vertex and so on.
+  This algorithm works, but the time complexity will be $O(V(V+E))$ since we are running dfs for every vertex in worst case.
 
+  We can employee graph algorithms to improve this brute force time complexity.
+  The idea is first to detect strongly connected components and represent each components as a vertex.
+  This converts the graph into directed acyclic graph (DAG).
+  We can use Kosaraju's Algorithm in this step.
+
+  With DAG, we can perform topological sort.
+  Topological sorting gives order of vertices.
+  Since the top vertex has the highest chance of reaching every vertex, we run dfs from this candidate.
+  At the end of the dfs, if not all vertices are visited, there is no path between them thus making no vertex from which all vertices are reachable.
+  On the other hand if we succeed, we can reach all vertices from this vertex (in case it is a component, all vertices from this component).
   
+  The algorithm in pseudocode:
 
+  \begin{lstlisting}
+    function DFS1(G, v, stack, visited):
+        visited[v] <- true
+        for u in G.[v].neighbors:
+            if visited[u] = false:
+            DFS1(G, u, stack, visited)
+        stack.push(v)
+
+    function invertGraph(G):
+        TG <- a new graph of N vertices
+        for v in G.V:
+            for u in G.[v].neighbors:
+                TG.[u].neighbors.add(v)
+        return TG
+
+    function DFS2(G, v, visited, DAG, map):
+        visited[v] <- true
+        map.add[v,DAG[-1]]
+        for u in G.[v].neighbors:
+            if visited[u] = false:
+                DFS2(G, u, visited)
+            else:
+                DAG.[-1].neighbors.add(map.get[u])
+
+    function KosarajusAlgorithm(G):
+        visited[size of G.V]
+        stack
+
+        for v in G.V:
+            if visited[v] = false:
+                DFS1(G, v, priority, visited)
+
+        TG <- invertGraph(G)
+        visited[size of G.V]
+
+        DAG <- a new acyclic graph
+        map <- key-vertices, value-components
+
+        while stack is not empty:
+            v <- stack.pop()
+            if visited[v] <- false:
+                DAG.addvertex[v]
+                DFS2(TG, v, visited, DAG, map)
+        
+        return DAG, map
+    
+
+    function DFS3(G, v, visited, orderstack):
+        visited[v] <- true
+        for u in G.[v].neighbors:
+            if visited[u] = false:
+                DFS3(G, u, visited, orderstack)
+        orderstack.push[v]
+    
+    function TopologicalSort(DAG):
+        orderstack <- []
+        visited[size of DAG.V]
+        for v in DAG.V:
+            if visited[v] = false:
+                DFS3(DAG, v, priority, visited, orderstack)
+        return orderstack
+    
+
+    function DFS4(G, v, visited):
+        visited[v] <- true
+        for u in G.[v].neighbors:
+            if visited[u] = false:
+                DFS4(G, u, visited)
+    
+    // starts here
+    DAG, map = KosarajusAlgorithm(G)
+    orderstack = TopologicalSort(DAG)
+
+    candidate=orderstack.pop
+    visited[size of DAG.V]
+    DFS4(DAG, candidate, visited)
+
+    if (unvisited v exists in visited):
+        return -1
+    else:
+        return map.findValue[candidate]
+
+  \end{lstlisting}
+
+  The time complexity of the algorithm is:
+  \begin{itemize}
+    \item Kosaraju's Algorithm:
+    \begin{itemize}
+      \item First dfs that populates stack is $O(V+E)$.
+      \item Inverting graph is $O(V+E)$ because we are inverting direction for each edges for adjacency list.
+      \item Second dfs is also $O(V+E)$.
+    \end{itemize}
+    The total time complexity for Kosaraju's Algorithm is $O((V+E)+(V+E)+(V+E))=O(V+E)$.
+    \item Topological sort is dfs that eventually traverses the whole graph while keeping order in stack.
+    Adding element to stack is constant time.
+    So the time complexity for this step is $O(V+E)$.
+    \item Final dfs for the candidate is also $O(V+E)$.
+  \end{itemize}
+
+  The total time complexity of the algorithm is $O((V+E)+(V+E)+(V+E))=O(V+E)$ linear time.
+
+  \item
 
 \end{enumerate}
 
