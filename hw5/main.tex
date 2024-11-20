@@ -198,7 +198,110 @@
 
   The total time complexity of the algorithm is $O((V+E)+(V+E)+(V+E))=O(V+E)$ linear time.
 
-  \item
+  \item For the three properties to be equal, they need to imply each other.
+  In other words, we need to prove that $(a)\Rightarrow(b)$, $(b)\Rightarrow(c)$ and $(c)\Rightarrow(a)$.
+
+  \begin{itemize}
+    \item $(a)\Rightarrow(b)$
+
+    We are given that removing any one vertex cannot disconnect graph.
+    So we need to remove at least two vertices to disconnect the graph, say $v$ and $u$.
+    Let's say there is only one vertices-disjoint paths between vertices $v$ and $u$.
+    However, we know that removing $u$ will not disconnect the graph and meaning we can reach $u$ from $v$ with at least two vertices-disjoint paths.
+    This contradicts property $(a)$ so $(a)$ must imply $(b)$.
+    
+    \item $(b)\Rightarrow(c)$
+
+    We are given that between any pair of vertices $u,v\in V$, there exist at least two vertices-disjoint paths.
+    Let's assume that the two vertices-disjoint paths are $P_1$ and $P_2$.
+    We can reach from $u$ to $v$ using $P_1$.
+    On the way back, we can return from $v$ to $u$ using $P_2$ which is a vertices-disjoint path from $P_1$.
+    We travelled from $u$ to $v$ back to $u$ using disjoint paths and this forms a cycle connecting these vertices.
+    Therefore property $(b)$ implies property $(c)$.
+
+    \item $(c)\Rightarrow(a)$
+
+    We are given that for each pair nodes $u,v\in V$, there exists a simple cycle connecting $u$ and $v$.
+    Let's assume that property $(a)$ doesn't hold and removing a vertex $t$ disconnects a graph into $V_1$ and $V_2$.
+    This means that $t$ is an articulation point in the graph $G$.
+    But we know that there is cycle connecting a vertex $v$ in $V_1$ and a vertex $u$ in $V_2$.
+    Removing $t$ can destroy the cycle but can't disconnect these two vertices.
+    So $t$ cannot be an articulation point and there must be another vertex $s$ that forms a cycle containing $t$, $u$ and $v$.
+    This results in a contradiction thus property $(c)$ must imply property $(a)$.
+
+  \end{itemize}
+
+  \item If we represent junctions are vertices and roads as edges in a graph, we have to traverse the graph by visiting each edge once.
+  This means we have to find Eulerian path in the graph.
+  Here I am making assumption that a road can be one way or the graph is directed.
+
+  \begin{itemize}
+    \item First we have to determine if such path exists in the graph.
+    We need to calculate all in-degree and out-degree edges for each vertex.
+    If the number of in-degree and out-degree are equal and there are 0 or 2 vertices with odd number of edges, we have a valid path.
+    \item We start with a vertex with odd edges and more out-degree than in-degree.
+    \item Then perform dfs until we reach the other odd number edge vertex.
+    If we traversed all the edges, this means we found the path.
+    If not, we have to backtrack and take different path.
+    We should keep on doing this until we traverse all the edges.
+  \end{itemize}
+
+  \begin{lstlisting}
+
+    countDegree(G):
+        for v in G.V:
+            for u in v.neighbors:
+                out[v]++
+                in[u]++
+    
+    hasEulerianPath(in, out):
+        start,end = 0,0
+        for i size of G.V:
+            if out[i]-in[i]>1 || in[i]-out[i]>1:
+                return false
+            if out[i]-in[i]==1:
+                start++
+            if in[i]-out[i]==1:
+                end++
+        if (end==0 && start==0) || (end==1 && start==1):
+            return true
+        else:
+            return false
+    
+    startVertex(G):
+        start=0
+        for i size of G.V:
+            if out[i]-in[i]==1:
+                return i
+        return start
+
+    dfs(cur, path):
+        while(out[cur] != 0):
+            out[cur]--
+            next = G.V[cur].neighbors[out[cur]]
+            dfs(next)
+        path.push(cur)
+        
+    G <- adjacency lists
+    in <- [] size of V
+    out <- [] size of v
+
+    countDegree(G)
+    if !hasEulerianPath(in,out):
+        return false
+    
+    path <- stack
+    dfs(startVertex(G), path)
+
+    res=[]
+    while(stack):
+        res.add(stack.pop())
+    return res
+  \end{lstlisting}
+
+  The time complexity for if Eulerian path exists is $O(E)$ since it count degree for all the edges.
+  The dfs is linear time $O(V+E)$.
+  So the total time complexity is $O(E)+O(V+E)=O(V+E)$.
 
 \end{enumerate}
 
