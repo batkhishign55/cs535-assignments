@@ -303,6 +303,92 @@
   The dfs is linear time $O(V+E)$.
   So the total time complexity is $O(E)+O(V+E)=O(V+E)$.
 
+  \item
+  \begin{enumerate}
+    \item Let's start by finding strongly connected components in the directed graph $G$ using Kosaraju's algorithm.
+    Then we shrink the components into vertices and left with directed acyclic graph (DAG).
+    If we can find a path from SCC A to SCC B, every vertex in B can be reached from every vertex in A.
+
+    With DAG, we can perform topological sort.
+    Then we can compute reachability for each vertex by starting from the reverse topological order.
+    For each vertex/SCC, we can union its reachability set with its children's set.
+    By doing so, a reachability is saved for every vertex in relative to their topological order.
+
+    After this, we can lookup reachability for every pair of vertices using the set we created.
+    If the set contains either $S[u].contains(v)$ or $S[v].contains(u)$ means we have a valid path between them.
+
+    \begin{lstlisting}
+        
+        // starts here
+        DAG, map = KosarajusAlgorithm(G)    // implemented in question 4
+        orderstack = TopologicalSort(DAG)   // implemented in question 4
+
+        S <- set of reachability
+
+        // calculate reachability set
+        for (v in reversed(orderstack)):
+            for (u in DAG.[v].children):
+                S[v].add(u)
+        
+        // check pairwise reachability
+        for (v in DAG.V):
+            for (u in DAG.V):
+                if u==v: continue
+                if v not in S[u] and u not in S[v]:
+                    return false
+        
+        return true
+
+    \end{lstlisting}
+
+    In question 4, I have calculated that Kosaraju's Algorithm and topological sort takes $O(V+E)$.
+    Checking pairwise reachability between each pair is going to take $O(V^2)$.
+    So the total time complexity is $O(V+E+V^2)=O(V^2)$ since $O(V^2)$ dominates.
+
+    \item The islands can be represented as vertices, the tunnels can be represented as edges and they form an undirected graph.
+    We have to find edges that removing any of them disconnects the graph which is defined as a "bridge".
+    To efficiently detect such edges, we can use Tarjan's algorithm.
+
+    The algorithm is similar to dfs but during dfs we maintain discovery time and low-link value for each vertex.
+    The edge is a bridge if $low[v]>disc[v]$.
+
+    \begin{lstlisting}
+        time = 0
+        disc <- discovery time for each vertex init -1
+        low <- low link value for each vertex init -1
+        parent <- parent of a vertex
+        bridges
+
+        function dfs(v):
+            disc[v]=low[v]=time
+            time++
+
+            for (u in G.[v].neighbors):
+                if disc[u] != -1:
+                    // if visited already
+                    low[v]=min(low[v],disc[v])
+                    continue
+
+                parent[u]=v
+                dfs(u)
+
+                low[v]=min(low[v],low[u])
+
+                if (low[u]>disc[v]):
+                    bridge.add((u,v))
+        
+        // starts here
+        for v in G.V:
+            if disc[v] == -1:
+                dfs(v)
+        
+        return bridges
+
+    \end{lstlisting}
+
+    The time complexity of this algorithm is $O(V+E)$ since it's based off of dfs and the additional operations are constant time.
+  \end{enumerate}
+
 \end{enumerate}
 
 
