@@ -202,13 +202,114 @@
     In thhe worst case, the total time complexity is $O(\sqrt(V)E)$.
 
     %q3
-    \item 
+    \item
+    \begin{enumerate}
+        \item Ford-Fulkerson algorithm is a greedy algorithm that computes the maximum flow in a flow network\cite{wiki2}.
+        This algorithm sends flow along a path from source node to sink node as long as there is a valid path.
+        If there is other augmenting path, it then pushes flow through this path and continue doing so until there is no path from source to sink.
+    
+        \begin{lstlisting}
+            function BFS(s,t,parent):
+                queue <- new queue
+                visited <- new array
+    
+                queue.add(s)
+                visited[s] = true
+    
+                while !queue.empty:
+                    v=queue.poll()
+                    for u in G.adj[v]:
+                        if visited[u]==false && residual[v][u]>0:
+                            queue.add(u)
+                            visited[u]=true
+                            parent[u]=v
+                return visited[t]
+            
+            parent <- array to store path
+            max_flow <- 0
+    
+            while (BFS(s,t,parent)):
+                path_flow = inf
+                v=sink
+    
+                while (v != source):
+                    path_flow = min(path_flow, residual[parent[s]][v])
+                    v = parent[v]
+                max_flow += path_flow
+    
+                // change residual capacity
+                v=sink
+                while v != source:
+                    u=parent[v]
+                    residual[u][v]-=path_flow
+                    residual[v][u]+=path_flow
+                    v=parent[v]
+            return max_flow
+        \end{lstlisting}
+    
+        The time complexity of bfs is $O(V+E)$.
+        The number of bfs is made is $O(VE)$ the number of augmenting paths.
+        The total time complexity is $O(VE*(V+E))=O(VE^2)$ as we used Edmonds-Karp variation here.
+
+        \item Let's define the problem first.
+        We have a directed graph $G=(V,E)$ with a source $s$ and a sink $t$.
+        Each edge has a positive capacity $c(u,v)$ between them, $\forall (u,v)\in E.c(u,v)>0$.
+        A flow through a vertex must within the capacity of edges it is connected, $\forall (u,v)\in E.0\leq f(u,v) \leq c(u,v)$.
+        Also, for all vertices except for $s$ and $t$, the total flow in must be equal to the total flow out,
+        $\forall u\in V.u\neq s,t.\sum_{v\in V}f(u,v)=\sum_{v\in V}f(v,u)$.
+
+        With these flow definitions, we can see that the total flow of the graph is equal to the total flow coming out of source or the total flow coming into the sink,
+        $F=\sum_{v\in V}f(s,v)$.
+
+        A cut in a flow graph is a partition that divides vertices into $S$ and $T$ such that $s\in S$ and $t\in T$.
+        The capacity of the cut $(S,T)$ is $c(S,T)=\sum_{u\in S,v\in T}c(u,v)$.
+
+        What we have to prove now is that the maximum flow $F$ is equal to the minimum cut capacity $c(S,T)$.
+
+        Let's calculate a net flow across cut (S,T):
+
+        \[f(S,T)=\sum_{u\in S,v\in T}f(u,v)-\sum_{u\in S,v\in T}f(v,u)\] [1]
+
+        Since we know that a flow through an edge must be at most the capacity of the edge:
+
+        \[f(S,T)\leq c(S,T)=\sum_{u\in S,v\in T}c(u,v)\]
+
+        From this, we can confirm that any total flow through a graph $F$ must be less than a capacity of a cut, $F\leq c(S,T)$.
+
+        But we have to prove that a max-flow has to be equal to the min-cut.
+        Let's define residual capacity as $c_r(u,v)=c(u,v)-f(u,v)+f(v,u)$.
+        The algorithm terminates only when there is no more augmenting path.
+        This means that there is no path that has a positive residual path left.
+        So when the program stops(when it finds the max flow) for edges from $u\in S$ to $v\in T$ becomes:
+
+        \[c_r(u,v)=c(u,v)-f(u,v)+f(v,u)\]
+        \[0=c(u,v)-f(u,v)+0\]
+        \[f(u,v)=c(u,v)\]
+
+        since we know residual capacity is $0$ when the program terminates.
+        $f(v,u)$ is also $0$ because a negative edge would make it impossible to reach from the source node.
+
+        For edges from $T$ to $S$ a flow is: $f(v,u)=0$ as discussed in the previous sentence.
+
+        If we plug in the values we have at the program termination to [1]:
+
+        \[f(S,T)=\sum_{u\in S,v\in T}f(u,v)-\sum_{u\in S,v\in T}f(v,u)=\sum_{u\in S,v\in T}c(u,v)-\sum_{u\in S,v\in T}0=c(S,T)\]
+
+        This proves that when the program is terminated, max-flow is equal to min-cut.
+
+    \end{enumerate}
+    
 \end{enumerate}
 
 \begin{thebibliography}{9}
     
     \bibitem{wiki}
     Hopcroft-Karp algorithm, \emph{Wikipedia}, \url{https://en.wikipedia.org/wiki/Hopcroft%E2%80%93Karp_algorithm#Analysis}
+    
+    \bibitem{wiki2}
+    Ford-Fulkerson algorithm, \emph{Wikipedia}, \url{https://en.wikipedia.org/wiki/Ford%E2%80%93Fulkerson_algorithm}
+
+    
     
     \end{thebibliography}
 \end{document}
