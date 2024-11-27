@@ -322,6 +322,88 @@
 
     Because we proved that these 2 definitions can infer each other, they are equivalent.
     
+    \item To prove that this problem is NP-Complete, we need to satisfy the following two conditions.
+
+    \begin{enumerate}
+        \item The problem can be verified in polynomial time.
+
+        If we have a solution to the problem meaning we have a spanning tree $T$ in $G$ where each vertex has a degree at most $k$, we can verify it in polynomial time.
+        We can verify it by doing BFS traversal starting from any vertex in the graph while making sure that each vertex has at most $k$ neighbors.
+        By the end of the traversal, if all vertices have been visited, we can conclude that the the problem has been solved.
+        Otherwise, the answer is not valid.
+
+        The time complexity of BFS is $O(V+E)$ (checking the number of vertices is constant time for each vertex so we can ignore it).
+        The time complexity to check if each vertices has been visited is $O(V)$ because we can check it using the visited array.
+        So the total time complexity of the verification is $O(V+E)+O(V)=O(V+E)$.
+
+        Therefore, the problem can be verified in polynomial time and it is NP.
+
+        \item A known NP-Hard problem can be reduced to this problem.
+
+        We can reduce Hamiltonian Path which is a known NP-Complete problem.
+        Hamiltonian Path is a cycle in a graph where each vertex is visited exactly once.
+        We can reduce it to our problem and show that solving Hamiltonian Path with reduction will result in a spanning tree $T$ in $G$ where each vertex has a degree at most $k$.
+
+        First, we clone each vertex $k$ times and they are interconnected.
+        Each cloned vertex is also connected to the cloned vertices to which it was connected in the original graph.
+        Now we have a new graph $G^\prime$, and we find Hamiltonian Path in $G^\prime$.
+        If we are able to find the path, we are able to find the spanning tree in the original $G$.
+        If not, we can't find such a tree with at most $k$ degree.
+
+        Let's define a "weak" edge in the path(I totally made up the term).
+        We have an edge $e$ in the original graph $G$.
+        After constructing $G^\prime$, we have clones of edges $e_i$ for $0\leq i < k^2$.
+        An edge is weak if it is the only edge between the vertices in the original graph, $\forall (u,v)\in V.\exists!e_i\in E^\prime:e=\{u,v\}.$
+        We can remove one of such edge if it exists because there is another path in the orignal graph that's reachable.
+
+        After this, we collapse all the cloned vertices into one and along with their respective edges, and we will end up with the spanning tree.
+
+        Let's look at the following example.
+
+        \begin{figure}[H]
+            \centering
+            \begin{minipage}{0.3\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{image7.png}
+                \caption{We have above graph $G$ with 5 vertices.}
+            \end{minipage}
+            \hspace{0.5cm}
+            \begin{minipage}{0.3\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{image8.png}
+                \caption{Let's say we have $k=3$ and construct $G^\prime$.}
+            \end{minipage}
+            \hspace{0.5cm}
+            \begin{minipage}{0.3\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{image9.png}
+                \caption{We can find a Hamiltonian path in $G^\prime$. Here we can remove one of the edges $(1,2)$, $(2,4)$ or $(1,4)$ cause they are weak as we defined above.}
+            \end{minipage}
+        \end{figure}
+
+        \begin{figure}[H]
+            \centering
+            \begin{minipage}{0.3\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{image11.png}
+                \caption{After collapsing the nodes, we are left with an answer.}
+            \end{minipage}
+            \hspace{0.5cm}
+            \begin{minipage}{0.3\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{image12.png}
+                \caption{If $k=2$ and after creating a new $G^\prime$, we can see that we can't find a Hamiltonian path. So it is impossible to find a spanning tree with at most $2$ degrees.}
+            \end{minipage}
+        \end{figure}
+    \end{enumerate}
+
+    The time complexity of the cloning is $O(Vk+Ek^2)$ since we are cloning $Vk$ more vertices and $Ek^2$ edges.
+    The time complexity of finding a weak edge and removing it is $O(Ek^2)$ since we go through every edge in the path.
+    The time complexity of collapsing the graph to the original is the same as cloning $O(Vk+Ek^2)$.
+    So the total time complexity of the reduction is $O(Vk+Ek^2)+O(Ek^2)+O(Vk+Ek^2)=O(Vk+Ek^2)$.
+
+    \item
+    
 \end{enumerate}
 
 \begin{thebibliography}{9}
