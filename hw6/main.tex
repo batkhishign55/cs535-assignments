@@ -298,6 +298,29 @@
         This proves that when the program is terminated, max-flow is equal to min-cut.
 
     \end{enumerate}
+
+    \item For these definitions to be equivalent, they must both be able to infer each other.
+
+    Let's prove definition1 $\Rightarrow$ definition2.
+    
+    \begin{itemize}
+        \item Definition1 states that $\forall C\in NP.C\leq_pA$.
+        \item NP-Complete problem is a subset of NP problem.
+        \item Therefore, if problem B is NP-Complete, $\forall B\in NP_{complete}.B\leq_pA$.
+        \item A satisfies definition2.
+    \end{itemize}
+
+    Let's prove definition2 $\Rightarrow$ definition1.
+    
+    \begin{itemize}
+        \item Say A satisfies Definition2. $\forall B\in NP_{complete}.B\leq_pA$.
+        \item By definition of B being NP-Complete, every problem in NP can be reduced to B in polynomial time. $\forall C\in NP.C\leq_p B$.
+        \item If $C\leq_p B$ and by definition2 $B\leq_p A$, then $C\leq_p A$.
+        In other words, every problem in NP can be reduced to A in polynomial time.
+        \item Therefore, this satisfies definition1 as well.
+    \end{itemize}
+
+    Because we proved that these 2 definitions can infer each other, they are equivalent.
     
 \end{enumerate}
 
