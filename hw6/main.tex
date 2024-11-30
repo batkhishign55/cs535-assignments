@@ -402,8 +402,32 @@
     The time complexity of collapsing the graph to the original is the same as cloning $O(Vk+Ek^2)$.
     So the total time complexity of the reduction is $O(Vk+Ek^2)+O(Ek^2)+O(Vk+Ek^2)=O(Vk+Ek^2)$.
 
-    \item
+    \item 
     
+    \begin{enumerate}
+        \item The problem can be verified in polynomial time.
+
+        Given a subset $V^\prime \in V$ of size at most $k$, we can verify whether $V^\prime$ is a dominating set by checking each vertex $v\in V$ whether $v$ is in $V^\prime$ or it is an adjacent vertex to a vertex in $V^\prime$.
+        The verification checks each vertex and its neighbors and this can be done in polynomial time.
+        Time complexity: $O(V+E)$.
+
+        \item A known NP-Hard problem can be reduced to this problem.
+
+        We can use Set Cover NP-Complete problem to reduce it to our problem.
+        In Set Cover problem, we have a set of vertices $U$ and a collection $S$ that is subsets of $U$.
+        If we check if there exists a subset $S_i \in S$ of size at most $k$ that the union of the subset covers $U$, we can say that the graph does have a dominating set.
+
+        A reduction is pretty simple. We can map $V$ to $U$ so the collection of subsets is basically a collection of $V$.
+        And after solving Set Cover, we can determine if there is a set of cover of size $k$.
+        If so, then there is a dominating set of size $k$.
+
+        The time complexity of the reduction: problem mapping is linear time $O(V+E)$ and if we say the total number of subsets is $n$, the final check is also linear time $O(n)$.
+        So the total time complexity is $O(V+E+n)$.
+
+        Since we can transform Set Cover problem to Dominating Set problem in polynomial time, the Dominating Set problem is at least as hard as Cover Set which is NP-Complete.
+        Therefore, Dominating Set is NP-Complete.
+    
+    \end{enumerate}
 \end{enumerate}
 
 \begin{thebibliography}{9}
